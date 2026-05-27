@@ -1,65 +1,121 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+import { useState, useRef, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { MarkerClusterer } from "react-kakao-maps-sdk";
+import { useRestAreas } from "@/hooks/useRestAreas";
+import { useAllCongestion } from "@/hooks/useAllCongestion";
+import RestAreaCard from "@/components/rest-area/RestAreaCard";
+import FilterBar from "@/components/search/FilterBar";
+import SearchBar from "@/components/search/SearchBar";
+import SkeletonCard from "@/components/common/SkeletonCard";
+import ErrorMessage from "@/components/common/ErrorMessage";
+import EmptyState from "@/components/common/EmptyState";
+import BottomSheet from "@/components/layout/BottomSheet";
+import type { RestArea } from "@/types/rest-area";
+import type { CongestionLevel } from "@/types/congestion";
+
+const KakaoMap = dynamic(() => import("@/components/map/KakaoMap"), { ssr: false });
+const CongestionMarker = dynamic(() => import("@/components/map/CongestionMarker"), { ssr: false });
+
+interface Filters {
+  route: string;
+  direction: string;
+  congestion: string;
+}
+
+export default function MainPage() {
+  const { data: restAreas, isLoading, isError, refetch } = useRestAreas();
+  const { data: congestionMap } = useAllCongestion();
+  const [filters, setFilters] = useState<Filters>({ route: "", direction: "", congestion: "" });
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [zoomLevel, setZoomLevel] = useState(13);
+  const itemRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  const resetFilters = () => setFilters({ route: "", direction: "", congestion: "" });
+
+  useEffect(() => {
+    if (selectedId) {
+      itemRefs.current.get(selectedId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [selectedId]);
+
+  const areas = Array.isArray(restAreas) ? restAreas : [];
+
+  const filtered = areas.filter((r: RestArea) => {
+    if (filters.route && !r.routeName.includes(filters.route)) return false;
+    if (filters.direction && r.direction !== filters.direction) return false;
+    return true;
+  });
+
+  const statusContent = (
+    <>
+      {isLoading && Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)}
+      {isError && <ErrorMessage onRetry={refetch} />}
+      {!isLoading && !isError && filtered.length === 0 && <EmptyState onReset={resetFilters} />}
+    </>
+  );
+
+  const renderItems = (withRef: boolean) =>
+    filtered.map((r: RestArea) => (
+      <div
+        key={r.id}
+        ref={
+          withRef
+            ? (el) => { if (el) itemRefs.current.set(r.id, el); else itemRefs.current.delete(r.id); }
+            : undefined
+        }
+        onMouseEnter={() => setHoveredId(r.id)}
+        onMouseLeave={() => setHoveredId(null)}
+      >
+        <RestAreaCard
+          restArea={r}
+          congestionLevel={congestionMap?.[r.id]?.level}
+          highlighted={hoveredId === r.id || selectedId === r.id}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+      </div>
+    ));
+
+  return (
+    <div className="flex h-full">
+      {/* 지도 */}
+      <div className="flex-1 relative">
+        <KakaoMap onZoomChanged={setZoomLevel}>
+          <MarkerClusterer minLevel={9}>
+            {areas.map((r: RestArea) => (
+              <CongestionMarker
+                key={r.id}
+                restArea={r}
+                congestionLevel={congestionMap?.[r.id]?.level as CongestionLevel | undefined}
+                onClick={() => setSelectedId(r.id)}
+                showLabel={zoomLevel <= 8}
+              />
+            ))}
+          </MarkerClusterer>
+        </KakaoMap>
+      </div>
+
+      {/* 데스크톱 사이드 패널 */}
+      <aside className="hidden md:flex flex-col w-96 border-l border-gray-100 bg-white">
+        <SearchBar />
+        <FilterBar filters={filters} onChange={setFilters} />
+        <p className="px-3 py-2 text-xs text-gray-400">총 {filtered.length}개</p>
+        <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-2">
+          {statusContent}
+          {renderItems(true)}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </aside>
+
+      {/* 모바일 BottomSheet */}
+      <BottomSheet>
+        <SearchBar />
+        <FilterBar filters={filters} onChange={setFilters} />
+        <div className="mt-2 space-y-2">
+          {statusContent}
+          {renderItems(false)}
         </div>
-      </main>
+      </BottomSheet>
     </div>
   );
 }
