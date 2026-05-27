@@ -56,13 +56,13 @@ function RestAreaDetailContent({ id }: { id: string }) {
   return (
     <div className="max-w-2xl mx-auto">
       {/* 헤더 */}
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100">
-        <Link href="/" className="text-gray-500 hover:text-gray-700 text-sm">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-line">
+        <Link href="/" className="text-text-secondary hover:text-text-primary text-sm">
           ← 뒤로
         </Link>
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-bold truncate">{detail.name}</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-xl font-bold truncate" style={{ letterSpacing: "-0.02em" }}>{detail.name}</h1>
+          <p className="text-sm text-text-secondary">
             {detail.routeName} · {detail.direction}{detail.operTime ? ` · 운영: ${detail.operTime}` : ""}
           </p>
         </div>
@@ -70,12 +70,12 @@ function RestAreaDetailContent({ id }: { id: string }) {
       </div>
 
       {/* 혼잡도 */}
-      <div className="px-4 py-4 border-b border-gray-100">
+      <div className="px-4 py-4 border-b border-line">
         {loadingCongestion ? (
           <div className="space-y-2">
-            <div className="h-4 w-24 bg-gray-100 rounded animate-pulse" />
-            <div className="h-3 w-full bg-gray-100 rounded-full animate-pulse" />
-            <div className="h-3 w-32 bg-gray-100 rounded animate-pulse" />
+            <div className="h-4 w-24 bg-surface-subtle rounded animate-pulse" />
+            <div className="h-2 w-full bg-surface-subtle rounded-full animate-pulse" />
+            <div className="h-3 w-32 bg-surface-subtle rounded animate-pulse" />
           </div>
         ) : congestion ? (
           <CongestionGauge congestion={congestion} />
@@ -91,7 +91,7 @@ function RestAreaDetailContent({ id }: { id: string }) {
             {loadingMenus && <SkeletonCard />}
             {!loadingMenus && menus && <MenuList menus={menus} />}
             {!loadingMenus && menus?.length === 0 && (
-              <p className="text-sm text-gray-400 text-center py-8">메뉴 정보가 없습니다.</p>
+              <p className="text-sm text-text-tertiary text-center py-8">메뉴 정보가 없습니다.</p>
             )}
           </>
         )}
@@ -105,7 +105,7 @@ function RestAreaDetailContent({ id }: { id: string }) {
                 fuelLpg={fuel?.lpg}
                 oilCompany={fuel?.oilCompany}
               />
-            : <p className="text-sm text-gray-400 text-center py-8">편의시설 정보가 없습니다.</p>
+            : <p className="text-sm text-text-tertiary text-center py-8">편의시설 정보가 없습니다.</p>
         )}
       </div>
     </div>

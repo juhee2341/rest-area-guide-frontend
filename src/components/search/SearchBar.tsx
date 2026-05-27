@@ -15,23 +15,23 @@ export default function SearchBar() {
   };
 
   return (
-    <form onSubmit={handleSearch} className="flex items-center gap-2 p-3 bg-white border-b border-gray-100">
+    <form onSubmit={handleSearch} className="flex items-center gap-2 p-3 bg-surface-card border-b border-line">
       <input
         value={from}
         onChange={(e) => setFrom(e.target.value)}
         placeholder="출발지"
-        className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="flex-1 text-sm border border-line rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand placeholder:text-text-tertiary"
       />
-      <span className="text-gray-400 text-sm">→</span>
+      <span className="text-text-tertiary text-sm">→</span>
       <input
         value={to}
         onChange={(e) => setTo(e.target.value)}
         placeholder="목적지"
-        className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="flex-1 text-sm border border-line rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand placeholder:text-text-tertiary"
       />
       <button
         type="submit"
-        className="flex-shrink-0 px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700"
+        className="flex-shrink-0 px-3 py-2 bg-brand text-white text-sm rounded-lg hover:bg-brand-hover"
       >
         검색
       </button>

@@ -47,16 +47,16 @@ function RoutePageContent() {
       </div>
 
       {/* 결과 패널 */}
-      <aside className="w-full md:w-96 flex flex-col border-l border-gray-100 bg-white">
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
-          <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+      <aside className="w-full md:w-96 flex flex-col border-l border-line bg-surface-card">
+        <div className="px-4 py-3 border-b border-line flex items-center gap-2">
+          <Link href="/" className="text-sm text-text-secondary hover:text-text-primary">
             ← 뒤로
           </Link>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold truncate">
               {from} → {to}
             </p>
-            <p className="text-xs text-gray-400">경유 휴게소 {restAreas?.length ?? 0}개</p>
+            <p className="text-xs text-text-tertiary">경유 휴게소 {restAreas?.length ?? 0}개</p>
           </div>
         </div>
 

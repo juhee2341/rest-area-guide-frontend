@@ -14,19 +14,19 @@ function FavoriteItem({ restArea }: { restArea: RestArea }) {
   const removeFavorite = useFavoriteStore((s) => s.removeFavorite);
 
   return (
-    <div className="flex items-center gap-3 py-3 border-b border-gray-100">
+    <div className="flex items-center gap-3 py-3 border-b border-line">
       <Link href={`/rest-area/${restArea.id}`} className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           {congestion && <CongestionBadge level={congestion.level as CongestionLevel} />}
           <span className="font-medium text-sm truncate">{restArea.name}</span>
         </div>
-        <p className="text-xs text-gray-400 mt-0.5">
+        <p className="text-xs text-text-tertiary mt-0.5">
           {restArea.routeName} · {restArea.direction}
         </p>
       </Link>
       <button
         onClick={() => removeFavorite(restArea.id)}
-        className="text-xs text-gray-400 hover:text-red-400 flex-shrink-0"
+        className="text-xs text-text-tertiary hover:text-status-high flex-shrink-0"
       >
         삭제
       </button>
@@ -62,16 +62,16 @@ export default function FavoritesPage() {
 
       {recentVisits.length > 0 && (
         <>
-          <h2 className="text-sm font-semibold text-gray-600 mb-3">최근 방문</h2>
+          <h2 className="text-sm font-semibold text-text-secondary mb-3">최근 방문</h2>
           <div>
             {recentVisits.map((rv) => {
               const area = recentAreas.find((r) => r.id === rv.id);
               return (
-                <div key={rv.id} className="flex items-center justify-between py-3 border-b border-gray-100">
-                  <Link href={`/rest-area/${rv.id}`} className="text-sm hover:text-blue-600">
+                <div key={rv.id} className="flex items-center justify-between py-3 border-b border-line">
+                  <Link href={`/rest-area/${rv.id}`} className="text-sm hover:text-brand">
                     {area?.name ?? rv.name}
                   </Link>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-text-tertiary">
                     {new Date(rv.visitedAt).toLocaleDateString("ko-KR")}
                   </span>
                 </div>

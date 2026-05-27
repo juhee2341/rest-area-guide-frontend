@@ -10,7 +10,7 @@ export const CONGESTION_CONFIG: Record<
   CongestionLevel,
   { label: string; color: string; bgColor: string }
 > = {
-  1: { label: "여유", color: "text-congestion-free", bgColor: "bg-congestion-free" },
-  2: { label: "보통", color: "text-congestion-normal", bgColor: "bg-congestion-normal" },
-  3: { label: "혼잡", color: "text-congestion-busy", bgColor: "bg-congestion-busy" },
+  1: { label: "여유", color: "text-status-low", bgColor: "bg-status-low" },
+  2: { label: "보통", color: "text-status-mid", bgColor: "bg-status-mid" },
+  3: { label: "혼잡", color: "text-status-high", bgColor: "bg-status-high" },
 };

@@ -5,9 +5,9 @@ import type { RestArea } from "@/types/rest-area";
 import type { CongestionLevel } from "@/types/congestion";
 
 const MARKER_COLORS: Record<CongestionLevel, string> = {
-  1: "#16a34a",
-  2: "#d97706",
-  3: "#dc2626",
+  1: "#6B9E5C",
+  2: "#D89C3F",
+  3: "#C45A3D",
 };
 
 const MARKER_LABELS: Record<CongestionLevel, string> = {
@@ -34,7 +34,7 @@ interface Props {
 
 export default function CongestionMarker({ restArea, congestionLevel, onClick, showLabel = true }: Props) {
   const map = useMap();
-  const color = congestionLevel ? MARKER_COLORS[congestionLevel] : "#6b7280";
+  const color = congestionLevel ? MARKER_COLORS[congestionLevel] : "#9AA39D";
   const label = congestionLevel ? MARKER_LABELS[congestionLevel] : "";
   const position = { lat: restArea.lat, lng: restArea.lng };
 

@@ -16,11 +16,11 @@ export default function FilterBar({ filters, onChange }: Props) {
     onChange({ ...filters, [key]: value });
 
   return (
-    <div className="flex gap-2 p-3 overflow-x-auto border-b border-gray-100 bg-white">
+    <div className="flex gap-2 p-3 overflow-x-auto border-b border-line bg-surface-card">
       <select
         value={filters.route}
         onChange={(e) => update("route", e.target.value)}
-        className="flex-shrink-0 text-sm border border-gray-200 rounded-lg px-2 py-1.5 bg-white"
+        className="flex-shrink-0 text-sm text-text-secondary bg-surface-subtle border-0 rounded-lg px-2 py-1.5"
       >
         <option value="">노선 전체</option>
         <option value="경부">경부선</option>
@@ -32,7 +32,7 @@ export default function FilterBar({ filters, onChange }: Props) {
       <select
         value={filters.direction}
         onChange={(e) => update("direction", e.target.value)}
-        className="flex-shrink-0 text-sm border border-gray-200 rounded-lg px-2 py-1.5 bg-white"
+        className="flex-shrink-0 text-sm text-text-secondary bg-surface-subtle border-0 rounded-lg px-2 py-1.5"
       >
         <option value="">방향 전체</option>
         <option value="상행">상행</option>
@@ -42,7 +42,7 @@ export default function FilterBar({ filters, onChange }: Props) {
       <select
         value={filters.congestion}
         onChange={(e) => update("congestion", e.target.value)}
-        className="flex-shrink-0 text-sm border border-gray-200 rounded-lg px-2 py-1.5 bg-white"
+        className="flex-shrink-0 text-sm text-text-secondary bg-surface-subtle border-0 rounded-lg px-2 py-1.5"
       >
         <option value="">혼잡도 전체</option>
         <option value="1">여유만</option>

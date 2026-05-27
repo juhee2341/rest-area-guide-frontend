@@ -31,7 +31,7 @@ export default function BottomSheet({ children, defaultHeight = 40 }: Props) {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg transition-[height] duration-200 z-40 flex flex-col md:hidden"
+      className="fixed bottom-0 left-0 right-0 bg-surface-card rounded-t-2xl shadow-lg transition-[height] duration-200 z-40 flex flex-col md:hidden"
       style={{ height: `${height}vh` }}
     >
       <div
@@ -40,7 +40,7 @@ export default function BottomSheet({ children, defaultHeight = 40 }: Props) {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        <div className="w-10 h-1 bg-gray-300 rounded-full" />
+        <div className="w-10 h-1 bg-line rounded-full" />
       </div>
       <div className="overflow-y-auto flex-1 px-4 pb-4">{children}</div>
     </div>

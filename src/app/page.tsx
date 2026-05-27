@@ -97,10 +97,10 @@ export default function MainPage() {
       </div>
 
       {/* 데스크톱 사이드 패널 */}
-      <aside className="hidden md:flex flex-col w-96 border-l border-gray-100 bg-white">
+      <aside className="hidden md:flex flex-col w-96 border-l border-line bg-surface-card">
         <SearchBar />
         <FilterBar filters={filters} onChange={setFilters} />
-        <p className="px-3 py-2 text-xs text-gray-400">총 {filtered.length}개</p>
+        <p className="px-3 py-2 text-xs text-text-tertiary">총 {filtered.length}개</p>
         <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-2">
           {statusContent}
           {renderItems(true)}

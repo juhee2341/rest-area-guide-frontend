@@ -21,7 +21,7 @@ interface Props {
 
 export default function FacilityList({ facilities, fuelGasoline, fuelDiesel, fuelLpg, oilCompany }: Props) {
   return (
-    <div className="divide-y divide-gray-100">
+    <div className="divide-y divide-line-divider">
       {FACILITY_ITEMS.map(({ key, icon, label }) => (
         <div
           key={key}
@@ -33,10 +33,10 @@ export default function FacilityList({ facilities, fuelGasoline, fuelDiesel, fue
             <span>{icon}</span>
             <span className="text-sm">{label}</span>
             {key === "gasStation" && oilCompany && (
-              <span className="text-xs text-gray-400">({oilCompany})</span>
+              <span className="text-xs text-text-tertiary">({oilCompany})</span>
             )}
           </div>
-          <div className="text-sm text-gray-500 text-right">
+          <div className="text-sm text-text-secondary text-right">
             {key === "gasStation" && facilities[key] ? (
               <div className="space-y-0.5">
                 {fuelGasoline && <p>휘발유 {fuelGasoline.toLocaleString()}원</p>}

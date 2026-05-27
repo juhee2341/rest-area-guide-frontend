@@ -12,12 +12,12 @@ export default function EmptyState({
   onReset,
 }: Props) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 py-10 text-gray-500">
+    <div className="flex flex-col items-center justify-center gap-3 py-10 text-text-secondary">
       <p className="text-sm">{message}</p>
       {onReset && (
         <button
           onClick={onReset}
-          className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+          className="px-4 py-2 text-sm border border-line rounded-lg hover:bg-surface-subtle"
         >
           필터 초기화
         </button>
@@ -25,7 +25,7 @@ export default function EmptyState({
       {showMapLink && (
         <Link
           href="/"
-          className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          className="px-4 py-2 text-sm bg-brand text-white rounded-lg hover:bg-brand-hover"
         >
           지도에서 찾기
         </Link>

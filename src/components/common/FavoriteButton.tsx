@@ -15,7 +15,7 @@ export default function FavoriteButton({ id, className = "" }: Props) {
     <button
       onClick={(e) => { e.stopPropagation(); toggleFavorite(id); }}
       aria-label={active ? "즐겨찾기 해제" : "즐겨찾기 추가"}
-      className={`text-xl transition-colors ${active ? "text-yellow-400" : "text-gray-300 hover:text-yellow-300"} ${className}`}
+      className={`text-xl transition-colors ${active ? "text-accent-star" : "text-text-tertiary hover:text-accent-star"} ${className}`}
     >
       ★
     </button>
