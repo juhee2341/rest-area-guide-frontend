@@ -7,8 +7,6 @@ const FACILITY_ITEMS: { key: keyof Facilities; icon: string; label: string }[] =
   { key: "atm", icon: "🏧", label: "ATM" },
   { key: "cafe", icon: "☕", label: "카페" },
   { key: "convenienceStore", icon: "🛒", label: "편의점" },
-  { key: "toilet", icon: "🚻", label: "화장실" },
-  { key: "parking", icon: "🅿", label: "주차장" },
 ];
 
 interface Props {

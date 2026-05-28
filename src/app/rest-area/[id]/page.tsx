@@ -1,15 +1,18 @@
 "use client";
 
-import { useState, use, useEffect, Suspense } from "react";
+import { useState, use, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRestArea } from "@/hooks/useRestArea";
 import { useCongestion } from "@/hooks/useCongestion";
 import { useMenus } from "@/hooks/useMenus";
 import { useFuel } from "@/hooks/useFuel";
+import { useWeather } from "@/hooks/useWeather";
+import { generateSituation } from "@/lib/recommend";
 import CongestionGauge from "@/components/rest-area/CongestionGauge";
 import MenuList from "@/components/rest-area/MenuList";
 import FacilityList from "@/components/rest-area/FacilityList";
+import AiRecommendCard from "@/components/rest-area/AiRecommendCard";
 import TabNav from "@/components/layout/TabNav";
 import FavoriteButton from "@/components/common/FavoriteButton";
 import SkeletonCard from "@/components/common/SkeletonCard";
@@ -30,7 +33,29 @@ function RestAreaDetailContent({ id }: { id: string }) {
   const { data: congestion, isLoading: loadingCongestion } = useCongestion(id);
   const { data: menus, isLoading: loadingMenus } = useMenus(id, stdRestCd);
   const { data: fuel } = useFuel(id, stdRestCd);
+  const { data: weather, isLoading: loadingWeather } = useWeather(detail?.lat, detail?.lng);
   const addRecentVisit = useFavoriteStore((s) => s.addRecentVisit);
+
+  const topMenus = useMemo(
+    () => menus?.filter((m) => m.isBest || m.isRecommended).slice(0, 2).map((m) => m.name),
+    [menus]
+  );
+
+  // 혼잡도·날씨·시설·메뉴가 하나라도 로드되면 즉시 현황 생성 (API 없음)
+  const situation = useMemo(() => {
+    if (!detail) return null;
+    if (!congestion && !weather && !topMenus?.length && !detail.facilities) return null;
+    return generateSituation({
+      congestionLabel: congestion?.label,
+      weather,
+      facilities: detail.facilities,
+      topMenus,
+    });
+  }, [detail, congestion, weather, topMenus]);
+
+  // 아직 데이터 로딩 중인 경우 스켈레톤 표시
+  const loadingSituation =
+    !situation && (loadingCongestion || loadingWeather || loadingMenus) && !!detail;
 
   useEffect(() => {
     if (detail) addRecentVisit({ id: detail.id, name: detail.name });
@@ -81,6 +106,13 @@ function RestAreaDetailContent({ id }: { id: string }) {
           <CongestionGauge congestion={congestion} />
         ) : null}
       </div>
+
+      {/* 현황 요약 (날씨·시설·메뉴 칩) */}
+      {(loadingSituation || situation) && (
+        <div className="px-4 py-4 border-b border-line">
+          <AiRecommendCard situation={situation ?? undefined} isLoading={loadingSituation} />
+        </div>
+      )}
 
       {/* 탭 */}
       <TabNav tabs={TABS} active={tab} onChange={setTab} />

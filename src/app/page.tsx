@@ -12,6 +12,7 @@ import SkeletonCard from "@/components/common/SkeletonCard";
 import ErrorMessage from "@/components/common/ErrorMessage";
 import EmptyState from "@/components/common/EmptyState";
 import BottomSheet from "@/components/layout/BottomSheet";
+import { CLUSTER_STYLES } from "@/lib/clusterStyles";
 import type { RestArea } from "@/types/rest-area";
 import type { CongestionLevel } from "@/types/congestion";
 
@@ -45,7 +46,11 @@ export default function MainPage() {
 
   const filtered = areas.filter((r: RestArea) => {
     if (filters.route && !r.routeName.includes(filters.route)) return false;
-    if (filters.direction && r.direction !== filters.direction) return false;
+    if (filters.direction && !r.direction.includes(filters.direction)) return false;
+    if (filters.congestion) {
+      const level = congestionMap?.[r.id]?.level;
+      if (!level || level > Number(filters.congestion)) return false;
+    }
     return true;
   });
 
@@ -82,7 +87,7 @@ export default function MainPage() {
       {/* 지도 */}
       <div className="flex-1 relative">
         <KakaoMap onZoomChanged={setZoomLevel}>
-          <MarkerClusterer minLevel={9}>
+          <MarkerClusterer minLevel={9} styles={CLUSTER_STYLES}>
             {areas.map((r: RestArea) => (
               <CongestionMarker
                 key={r.id}

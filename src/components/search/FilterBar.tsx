@@ -25,8 +25,11 @@ export default function FilterBar({ filters, onChange }: Props) {
         <option value="">노선 전체</option>
         <option value="경부">경부선</option>
         <option value="서해안">서해안선</option>
-        <option value="영동">영동선</option>
-        <option value="중부">중부선</option>
+        <option value="호남">호남선</option>
+        <option value="남해">남해선</option>
+        <option value="순천완주">순천완주선</option>
+        <option value="청주영덕">청주영덕선</option>
+        <option value="무안광주">무안광주선</option>
       </select>
 
       <select

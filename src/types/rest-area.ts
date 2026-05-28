@@ -21,8 +21,6 @@ export interface Facilities {
   atm: boolean;
   cafe: boolean;
   convenienceStore: boolean;
-  toilet: boolean;
-  parking: boolean;
 }
 
 export interface RecentVisit {

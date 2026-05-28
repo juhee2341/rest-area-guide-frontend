@@ -70,14 +70,12 @@ export async function fetchRestAreaDetail(id: string, stdRestCd: string): Promis
   const allData = await allRes.json();
   const info = allData.list?.find((item: Record<string, string>) => item.unitCode === id);
   if (!info) throw new Error(`휴게소를 찾을 수 없습니다 (id=${id})`);
-  console.log("[detail] 첫 번째 항목 필드:", Object.keys(info), info);
 
   let facList: Array<{ psName: string; stime?: string; etime?: string }> = [];
   if (facilityRes.ok) {
     const facilityData = await facilityRes.json();
     facList = facilityData.list ?? [];
   }
-  console.log(`[facility] stdRestCd=${stdRestCd} status=${facilityRes.status} count=${facList.length}`, facList.slice(0, 3));
 
   // stime/etime이 있는 첫 항목에서 운영시간 추출
   const timeSample = facList.find((f) => f.stime && f.etime);
@@ -97,11 +95,9 @@ export async function fetchRestAreaDetail(id: string, stdRestCd: string): Promis
       gasStation:       hasKeyword(facList, "주유"),
       evCharger:        hasKeyword(facList, "전기차", "급속충전", "완속충전", "전기충전"),
       shower:           hasKeyword(facList, "샤워"),
-      atm:              hasKeyword(facList, "ATM", "현금자동", "atm"),
-      cafe:             hasKeyword(facList, "카페", "커피", "베이커리", "스낵"),
-      convenienceStore: hasKeyword(facList, "편의점", "매점", "하이마트", "올리브"),
-      toilet:           hasKeyword(facList, "화장실", "수유실"),
-      parking:          hasKeyword(facList, "주차"),
+      atm:              hasKeyword(facList, "ATM", "현금자동"),
+      cafe:             hasKeyword(facList, "카페", "커피", "베이커리"),
+      convenienceStore: hasKeyword(facList, "편의점", "매점"),
     },
   };
 }
