@@ -154,20 +154,28 @@ export async function fetchCongestion(unitCode: string): Promise<Congestion> {
   return all[unitCode] ?? toCongestionLevel(0);
 }
 
-// ✅ 명세 확인: /business/curStateStation (uses serviceAreaCode2 = stdRestCd)
-// 응답: gasolinePrice, diselPrice(오타), lpgPrice, oilCompany
+// ✅ 명세 확인: /business/curStateStation
+// 주유소 serviceAreaCode2 = 휴게소 stdRestCd + 1 (API 설계상 규칙)
+// 응답 가격 형식: "1,994원" → 쉼표·단위 제거 후 parseInt
+function parsePrice(raw: string | undefined | null): number | null {
+  if (!raw) return null;
+  const n = parseInt(raw.replace(/[^0-9]/g, ""));
+  return isNaN(n) ? null : n;
+}
+
 export async function fetchFuel(stdRestCd: string): Promise<FuelPrice> {
+  const gasStationCode = String(parseInt(stdRestCd) + 1).padStart(6, "0");
   const res = await fetch(
-    buildUrl("/business/curStateStation", { serviceAreaCode2: stdRestCd, numOfRows: "10", pageNo: "1" }),
+    buildUrl("/business/curStateStation", { serviceAreaCode2: gasStationCode, numOfRows: "10", pageNo: "1" }),
     { next: { revalidate: 3600 } }
   );
   if (!res.ok) throw new Error("주유 단가 조회 실패");
   const data = await res.json();
   const item = data.list?.[0] ?? null;
   return {
-    gasoline: item?.gasolinePrice ? parseInt(item.gasolinePrice) : null,
-    diesel: item?.diselPrice ? parseInt(item.diselPrice) : null,
-    lpg: item?.lpgPrice ? parseInt(item.lpgPrice) : null,
+    gasoline: parsePrice(item?.gasolinePrice),
+    diesel: parsePrice(item?.diselPrice),
+    lpg: parsePrice(item?.lpgPrice),
     oilCompany: item?.oilCompany ?? null,
   };
 }
