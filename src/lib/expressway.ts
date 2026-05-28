@@ -52,9 +52,10 @@ export async function fetchRestAreas(): Promise<RestArea[]> {
 
 // ✅ 명세 확인: /restinfo/restConvList
 // 응답: psCode, psName, psDesc, stdRestCd, stdRestNm, routeCd, routeNm, svarAddr
+// 주의: restConvList 에는 주유소 정보가 포함되지 않음 — 주유소 유무는 fetchFuel 결과로 판단
 export async function fetchRestAreaDetail(id: string, stdRestCd: string): Promise<RestAreaDetail> {
-  // 전체 목록 재사용 (캐시됨) + 편의시설 병렬 조회
-  const [allRes, facilityRes] = await Promise.all([
+  // 전체 목록 재사용 (캐시됨) + 편의시설 + 주유소 병렬 조회
+  const [allRes, facilityRes, fuelData] = await Promise.all([
     fetch(
       buildUrl("/locationinfo/locationinfoRest", { numOfRows: "9999", pageNo: "1" }),
       { next: { revalidate: 86400 } }
@@ -63,6 +64,7 @@ export async function fetchRestAreaDetail(id: string, stdRestCd: string): Promis
       buildUrl("/restinfo/restConvList", { stdRestCd, numOfRows: "100", pageNo: "1" }),
       { next: { revalidate: 86400 } }
     ),
+    fetchFuel(stdRestCd).catch(() => null),
   ]);
 
   if (!allRes.ok) throw new Error(`휴게소 목록 조회 실패 (status=${allRes.status})`);
@@ -92,7 +94,7 @@ export async function fetchRestAreaDetail(id: string, stdRestCd: string): Promis
     lng: parseFloat(info.xValue),
     operTime,
     facilities: {
-      gasStation:       hasKeyword(facList, "주유"),
+      gasStation:       !!(fuelData?.gasoline || fuelData?.diesel || fuelData?.lpg),
       evCharger:        hasKeyword(facList, "전기차", "급속충전", "완속충전", "전기충전"),
       shower:           hasKeyword(facList, "샤워"),
       atm:              hasKeyword(facList, "ATM", "현금자동"),
